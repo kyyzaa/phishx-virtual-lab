@@ -1,0 +1,1832 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>📧 Email Phishing Simulator - PhishX Lab</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            overflow-x: hidden;
+        }
+
+        /* Animated Background */
+        .animated-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            opacity: 0.1;
+        }
+
+        .floating-shape {
+            position: absolute;
+            border-radius: 50%;
+            background: rgba(255, 255, 255, 0.1);
+            animation: float 6s ease-in-out infinite;
+        }
+
+        .floating-shape:nth-child(1) {
+            width: 80px;
+            height: 80px;
+            top: 20%;
+            left: 10%;
+            animation-delay: 0s;
+        }
+
+        .floating-shape:nth-child(2) {
+            width: 60px;
+            height: 60px;
+            top: 60%;
+            right: 10%;
+            animation-delay: 2s;
+        }
+
+        .floating-shape:nth-child(3) {
+            width: 100px;
+            height: 100px;
+            bottom: 20%;
+            left: 20%;
+            animation-delay: 4s;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #10b981, #6366f1);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .navbar {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-brand-logo {
+            width: 70px !important;
+            height: 70px !important;
+            object-fit: contain;
+        }
+
+        .nav-brand-text span {
+            font-size: 1rem;
+            color: #374151;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            background: transparent;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #6366f1;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 2rem;
+            animation: fadeInUp 0.8s ease-out 0.3s both;
+        }
+
+        /* Enhanced Header Section */
+        .simulator-header {
+            text-align: center;
+            margin-bottom: 3rem;
+            position: relative;
+        }
+
+        .simulator-title h1 {
+            font-size: 3.5rem;
+            font-weight: 800;
+            background: linear-gradient(135deg, #667eea, #764ba2, #f093fb);
+            background-size: 200% 200%;
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: gradientShift 3s ease-in-out infinite;
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: white;
+            margin-bottom: 3rem;
+            max-width: 800px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Dashboard Stats */
+        .dashboard-stats {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 2rem;
+            margin-bottom: 3rem;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            display: flex;                
+            flex-direction: column;       
+            align-items: center;          
+            justify-content: center;      
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.6s ease-out;
+            text-align: center;           /* pastikan teks  center */
+        }
+        .stat-card img {
+            display: block;          
+            margin: 0 auto;          /* paksa center */
+            padding: 0;              /* reset padding */
+            transform: translateX(-25px); 
+        }
+
+
+
+        .stat-card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 25px 50px rgba(0, 0, 0, 0.15);
+        }
+
+        .stat-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            animation: shimmer 2s ease-in-out infinite;
+        }
+
+        .stat-card.primary::before { background: linear-gradient(90deg, #6366f1, #3b82f6); }
+        .stat-card.secondary::before { background: linear-gradient(90deg, #8b5cf6, #a855f7); }
+        .stat-card.success::before { background: linear-gradient(90deg, #10b981, #059669); }
+        .stat-card.info::before { background: linear-gradient(90deg, #06b6d4, #0891b2); }
+
+        .stat-icon {
+            font-size: 2.5rem;
+            margin-bottom: 1rem;
+            display: block;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .stat-number {
+            font-size: 3rem;
+            font-weight: 800;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+            display: block;
+            animation: countUp 1s ease-out;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-size: 0.9rem;
+        }
+
+        /* Main Workspace - 3 Panel Layout */
+        .email-workspace {
+            display: grid;
+            grid-template-columns: 1fr 1fr 1fr;
+            grid-template-rows: auto auto;
+            gap: 1.5rem;
+            margin-bottom: 3rem;
+            min-height: auto !important;
+            max-width: 1400px;
+            margin-left: auto;
+            margin-right: auto;
+        }
+
+        /* Left Column */
+        .left-column {
+            grid-column: 1;
+            grid-row: 1 / 3;
+            display: flex;
+            flex-direction: column;
+            gap: 1.5rem;
+        }
+
+        /* Control Panel */
+        .control-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInLeft 0.8s ease-out;
+        }
+
+        .control-panel h3 {
+            color: #374151;
+            margin-bottom: 1.5rem;
+            font-size: 1.3rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .difficulty-selector {
+            margin-bottom: 2rem;
+        }
+
+        .difficulty-selector label {
+            display: block;
+            color: #6b7280;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .difficulty-select {
+            width: 100%;
+            padding: 1rem;
+            border: 2px solid #e5e7eb;
+            border-radius: 12px;
+            background: white;
+            color: #374151;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .difficulty-select:hover, .difficulty-select:focus {
+            border-color: #6366f1;
+            box-shadow: 0 0 0 3px rgba(99, 102, 241, 0.1);
+            outline: none;
+        }
+
+        .action-buttons {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .btn-primary, .btn-secondary {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            padding: 1rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 35px rgba(99, 102, 241, 0.4);
+        }
+
+        .btn-secondary {
+            background: #f3f4f6;
+            color: #374151;
+            border: 2px solid #e5e7eb;
+        }
+
+        .btn-secondary:hover {
+            background: #e5e7eb;
+            border-color: #d1d5db;
+        }
+
+        /* Top Right Panel - Email Container */
+        .email-container {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            grid-column: 2 / 4;
+            grid-row: 1;
+            border-radius: 20px;
+            overflow: hidden;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInUp 0.8s ease-out;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .inbox-header {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .inbox-title-section h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .inbox-meta {
+            display: flex;
+            gap: 0.8rem;
+            margin-bottom: 0.8rem;
+        }
+
+        .inbox-count, .inbox-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .inbox-count {
+            background: #dbeafe;
+            color: #1e40af;
+        }
+
+        .inbox-status {
+            background: #fee2e2;
+            color: #dc2626;
+        }
+
+        .inbox-toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-top: 0.8rem;
+            padding-top: 0.8rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .toolbar-left {
+            display: flex;
+            gap: 0.75rem;
+        }
+
+        .toolbar-btn, .view-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1rem;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            color: #6b7280;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .toolbar-btn:hover, .view-btn:hover {
+            background: #f3f4f6;
+            border-color: #6366f1;
+        }
+
+        .view-btn.active {
+            background: #6366f1;
+            color: white;
+            border-color: #6366f1;
+        }
+
+        /* Email List */
+        .email-list-container {
+            flex: 1;
+            overflow-y: auto;
+            max-height: 500px;
+        }
+
+        .list-header {
+            background: #f8fafc;
+            padding: 0.8rem 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            font-size: 0.75rem;
+            font-weight: 600;
+            color: #6b7280;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+
+        .email-list {
+            padding: 0;
+        }
+
+        .email-item {
+            display: flex;
+            align-items: center;
+            gap: 0.8rem;
+            padding: 1.2rem 1.5rem;
+            border-bottom: 1px solid #f3f4f6;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+        }
+
+        .email-item:hover {
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            transform: translateX(4px);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .email-item.unread {
+            background: #fefefe;
+            border-left: 4px solid #6366f1;
+        }
+
+        .email-item.unread .email-subject {
+            font-weight: 700;
+        }
+
+        .email-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            color: white;
+            font-size: 1.1rem;
+            flex-shrink: 0;
+        }
+
+        .email-content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .email-sender {
+            font-weight: 600;
+            color: #374151;
+            font-size: 0.9rem;
+            margin-bottom: 0.2rem;
+        }
+
+        .email-subject {
+            color: #1f2937;
+            font-weight: 500;
+            margin-bottom: 0.3rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .email-preview {
+            color: #6b7280;
+            font-size: 0.8rem;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+
+        .email-time {
+            color: #9ca3af;
+            font-size: 0.8rem;
+            text-align: right;
+            flex-shrink: 0;
+        }
+
+        .email-flag {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            background: #10b981;
+            flex-shrink: 0;
+        }
+
+        .email-flag.warning {
+            background: #f59e0b;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .email-flag.danger {
+            background: #ef4444;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Illustration & Tips */
+        .illustration-panel {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        .cute-phishing-card {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 2rem;
+            border-radius: 20px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInRight 0.8s ease-out;
+            text-align: center;
+        }
+
+        .cute-phishing-img {
+            width: 200px;
+            height: 200px;
+            object-fit: contain;
+            margin-bottom: 1rem;
+            border-radius: 16px;
+            background: linear-gradient(135deg, #fee2e2, #fecaca);
+            padding: 1rem;
+        }
+
+        .illustration-caption {
+            font-weight: 700;
+            color: #dc2626;
+            font-size: 1.2rem;
+            margin-bottom: 1rem;
+        }
+
+        .illustration-description {
+            color: #6b7280;
+            font-size: 0.9rem;
+            line-height: 1.6;
+        }
+
+        /* Tips Panel */
+        .tips-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInRight 0.8s ease-out;
+            grid-column: 2 / 4;
+            grid-row: 2;
+            display: block;
+            height: auto;
+            max-height: none;
+        }
+
+
+        .current-tip {
+            display: flex;
+            gap: 1rem;
+            padding: 1.5rem;
+            background: linear-gradient(135deg, #f8fafc, #f1f5f9);
+            border-radius: 16px;
+            border-left: 4px solid #10b981;
+            margin-bottom: 1rem;
+        }
+
+        .tip-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+
+        .tip-content strong {
+            display: block;
+            color: #374151;
+            margin-bottom: 0.5rem;
+            font-size: 1rem;
+        }
+
+        .tip-content p {
+            color: #6b7280;
+            font-size: 0.9rem;
+            margin: 0;
+        }
+
+        .tip-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.5rem 0;
+        }
+
+        .tip-btn {
+            background: #6366f1;
+            color: white;
+            border: none;
+            padding: 0.5rem 1rem;
+            border-radius: 8px;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 36px;
+        }
+
+        .tip-btn:hover {
+            background: #4f46e5;
+            transform: translateY(-1px);
+        }
+
+        /* Loading State */
+        .loading-state {
+            text-align: center;
+            padding: 4rem 2rem;
+            color: #6b7280;
+        }
+
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 4px solid #f3f4f6;
+            border-top: 4px solid #6366f1;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 1rem;
+        }
+
+        /* Animations */
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-20px); }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideInLeft {
+            from {
+                opacity: 0;
+                transform: translateX(-30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Illustration Section - Tanpa kotak background */
+        .illustration-section-no-box {
+            text-align: center;
+            padding: 0;
+            margin-top: 1rem;
+        }
+
+        .phishing-illustration-large {
+            width: 100%;
+            max-width: 450px;
+            height: auto;
+            border-radius: 15px;
+            /* Menghilangkan box-shadow dan background */
+            filter: drop-shadow(0 8px 20px rgba(0, 0, 0, 0.2));
+        }
+
+        /* Tips Panel */
+        .tips-panel {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem;
+            border-radius: 16px;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            animation: slideInRight 0.8s ease-out;
+            grid-column: 2 / 4;
+            grid-row: 2;
+            display: block !important;
+            flex-direction: column;
+            height: auto !important;
+            max-height: none !important;
+        }
+
+        .tips-panel h3 {
+            color: #374151;
+            margin-bottom: 0.8rem;
+            font-size: 1.1rem;
+            font-weight: 700;
+            display: flex;
+            align-items: center;
+            gap: 0.4rem;
+        }
+
+        .current-tip {
+            background: linear-gradient(135deg, #fef3c7, #fde68a);
+            border: 2px solid #f59e0b;
+            border-radius: 12px;
+            padding: 0.8rem;
+            margin-bottom: 0.8rem;
+            display: flex;
+            align-items: flex-start;
+            gap: 0.8rem;
+            flex: none !important;
+        }
+
+        .tip-icon {
+            font-size: 1.5rem;
+            margin-top: 0.25rem;
+        }
+
+        .tip-content strong {
+            color: #92400e;
+            font-size: 0.95rem;
+            display: block;
+            margin-bottom: 0.25rem;
+        }
+
+        .tip-content p {
+            color: #78350f;
+            margin: 0;
+            line-height: 1.3;
+            font-size: 0.85rem;
+        }
+
+        .tip-nav {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0.3rem 0;
+            margin-top: auto;
+        }
+
+        .tip-btn {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 32px;
+            border: none;
+            padding: 0.4rem 0.8rem;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.8rem;
+            transition: all 0.3s ease;
+        }
+
+        .tip-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 20px rgba(99, 102, 241, 0.3);
+        }
+
+        #tipCounter {
+            color: #6b7280;
+            font-weight: 600;
+        }
+
+        /* Emoji Image Styling */
+        .emoji-img {
+            width: 1.5em;
+            height: 1.5em;
+            display: inline-block;
+            vertical-align: middle;
+            object-fit: contain;
+            margin-right: 0.5rem;
+            transform: translateY(-1px);
+        }
+
+        /* Larger inbox simulator icon */
+        .inbox-title-section h2 .emoji-img {
+            width: 2.5em;
+            height: 2.5em;
+        }
+
+        /* Specific sizing for different contexts */
+        .stat-icon .emoji-img {
+            width: 1.8em;
+            height: 1.8em;
+        }
+
+        /* Extra large for streak and target specifically */
+        .stat-card:nth-child(3) .stat-icon .emoji-img, 
+        .stat-card:nth-child(4) .stat-icon .emoji-img {
+            width: 2.2em;
+            height: 2.2em;
+        }
+
+        .btn-icon .emoji-img {
+            width: 1.4em;
+            height: 1.4em;
+        }
+
+        .result-icon .emoji-img {
+            width: 2.5em;
+            height: 2.5em;
+        }
+
+        .tip-icon .emoji-img {
+            width: 1.6em;
+            height: 1.6em;
+        }
+
+        @keyframes slideInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes gradientShift {
+            0%, 100% { background-position: 0% 50%; }
+            50% { background-position: 100% 50%; }
+        }
+
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); opacity: 1; }
+            50% { transform: scale(1.1); opacity: 0.8; }
+        }
+
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        @keyframes countUp {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1200px) {
+            .email-workspace {
+                grid-template-columns: 1fr 1.8fr;
+                padding: 1.5rem;
+            }
+        }
+
+        @media (max-width: 992px) {
+            .email-workspace {
+                grid-template-columns: 1fr 1fr;
+                grid-template-rows: auto auto !important;
+                gap: 1.5rem;
+                padding: 1rem;
+            }
+            
+            .left-column {
+                grid-column: 1;
+                grid-row: 1 / 3;
+            }
+            
+            .email-container {
+                grid-column: 2;
+                grid-row: 1;
+            }
+            
+            .tips-panel {
+                grid-column: 2;
+                grid-row: 2;
+            }
+
+            .simulator-title h1 {
+                font-size: 2.5rem;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                padding: 1rem;
+            }
+
+            .simulator-title h1 {
+                font-size: 2rem;
+            }
+
+            .dashboard-stats {
+                grid-template-columns: 1fr;
+            }
+
+            .email-workspace {
+                grid-template-columns: 1fr;
+                grid-template-rows: repeat(2, auto);
+                gap: 1rem;
+                padding: 1rem;
+            }
+            
+            .left-column {
+                grid-column: 1;
+                grid-row: 1;
+            }
+            
+            .email-container {
+                grid-column: 1;
+                grid-row: 2;
+            }
+            
+            .tips-panel {
+                grid-column: 1;
+                grid-row: 3;
+            }
+            
+            .phishing-illustration-large {
+                max-width: 350px;
+            }
+
+            .email-workspace {
+                gap: 1rem;
+            }
+        }
+
+        /* Footer */
+        .footer {
+            background: rgba(0, 0, 0, 0.8);
+            backdrop-filter: blur(20px);
+            color: white;
+            padding: 3rem 0;
+            margin-top: 4rem;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+    <!-- Animated Background -->
+    <div class="animated-bg">
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+        <div class="floating-shape"></div>
+    </div>
+
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <img src="assets/img/PhishX.png" alt="PhishX Logo" class="nav-brand-logo">
+                <div class="nav-brand-text">
+                    <span>Virtual Lab Literasi Digital TPB ITB</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn" onclick="window.location.href='index.html'">Home</button>
+                <button class="nav-btn active" onclick="window.location.href='emailsimulator.html'">Email Simulator</button>
+                <button class="nav-btn" onclick="window.location.href='materi.html'">Materi</button>
+                <button class="nav-btn" onclick="window.location.href='quiz.html'">Quiz</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <section id="simulator" class="section active">
+            <!-- Enhanced Header -->
+            <div class="simulator-header">
+                <div class="simulator-title">
+                    <h1>📧 Email Phishing Simulator</h1>
+                    <p class="subtitle">Uji kemampuan Anda mengenali email phishing dari email legitimate dengan berbagai tingkat kesulitan</p>
+                </div>
+                
+                <!-- Live Stats Dashboard -->
+                <div class="dashboard-stats">
+                    <div class="stat-card primary">
+                        <span class="stat-icon"><img src="assets/img/target.png" alt="Target" class="emoji-img"></span>
+                        <span class="stat-number" id="emailCorrect">0</span>
+                        <span class="stat-label">Email Benar</span>
+                    </div>
+                    <div class="stat-card secondary">
+                        <span class="stat-icon"><img src="assets/img/email.png" alt="Email" class="emoji-img"></span>
+                        <span class="stat-number" id="emailTotal">0</span>
+                        <span class="stat-label">Total Dianalisis</span>
+                    </div>
+                    <div class="stat-card success">
+                        <span class="stat-icon"><img src="assets/img/streak.png" alt="Streak" class="emoji-img"></span>
+                        <span class="stat-number" id="emailStreak">0</span>
+                        <span class="stat-label">Streak Terbaik</span>
+                    </div>
+                    <div class="stat-card info">
+                        <span class="stat-icon"><img src="assets/img/akurasi.png" alt="Akurasi" class="emoji-img"></span>
+                        <span class="stat-number" id="accuracy">0%</span>
+                        <span class="stat-label">Akurasi</span>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Main Workspace - 3 Panel Layout -->
+            <div class="email-workspace">
+                <!-- Left Column - Pengaturan + Gambar -->
+                <div class="left-column">
+                    <div class="control-panel">
+                        <h3><img src="assets/img/setting.png" alt="Setting" class="emoji-img"> Pengaturan Simulasi</h3>
+                        <div class="difficulty-selector">
+                            <label for="difficultySelect">Tingkat Kesulitan:</label>
+                            <select id="difficultySelect" onchange="setDifficulty(this.value)" class="difficulty-select">
+                                <option value="easy">👶 Pemula - Ada Petunjuk Red Flags</option>
+                                <option value="medium" selected>🎯 Menengah - Deteksi Mandiri</option>
+                                <option value="hard">🔥 Expert - Phishing Canggih</option>
+                            </select>
+                        </div>
+                        
+                        <div class="action-buttons-compact">
+                            <button onclick="generateEmails()" class="btn-compact btn-primary">
+                                <span class="btn-icon-small"><img src="assets/img/logoemail.png" alt="Logo Email" class="emoji-img-small"></span>
+                                <span>Email Baru</span>
+                            </button>
+                            <button onclick="resetStats()" class="btn-compact btn-secondary">
+                                <span class="btn-icon-small"><img src="assets/img/reset.png" alt="Reset" class="emoji-img-small"></span>
+                                <span>Reset Stats</span>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <!-- Gambar Langsung Tanpa Kotak -->
+                    <div class="illustration-section-no-box">
+                        <img src="assets/img/cutefisiing.png" alt="Cute Phishing Illustration" class="phishing-illustration-large">
+                    </div>
+                </div>
+
+                <!-- Right Top - Inbox Simulator -->
+                <div class="email-container">
+                    <div class="inbox-header">
+                        <div class="inbox-title-section">
+                            <h2><img src="assets/img/panjang.png" alt="Panjang" class="emoji-img"> Inbox Simulator</h2>
+                            <div class="inbox-meta">
+                                <span class="inbox-count" id="emailCount">Loading emails...</span>
+                                <span class="inbox-status">🔴 Unread emails detected</span>
+                            </div>
+                            
+                            <div class="inbox-toolbar">
+                                <div class="toolbar-left">
+                                    <button class="toolbar-btn" onclick="selectAllEmails()">
+                                        <span class="btn-icon"><img src="assets/img/check.png" alt="Check" class="emoji-img"></span>
+                                        <span>Select All</span>
+                                    </button>
+                                    <button class="toolbar-btn" onclick="markAsRead()">
+                                        <span class="btn-icon"><img src="assets/img/email.png" alt="Email" class="emoji-img"></span>
+                                        <span>Mark as Read</span>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="email-list-container">
+                        <div class="list-header">
+                            Email Security Analysis
+                        </div>
+                        <div id="emailList" class="email-list">
+                            <!-- Loading State -->
+                            <div class="loading-state">
+                                <div class="spinner"></div>
+                                <p>Klik "Email Baru" untuk memulai simulasi</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Bottom Right - Tips Keamanan -->
+                <div class="tips-panel">
+                    <h3><img src="assets/img/idea.png" alt="Idea" class="emoji-img"> Tips Keamanan</h3>
+                    <div id="currentTip" class="current-tip">
+                        <span class="tip-icon"><img src="assets/img/target.png" alt="Target" class="emoji-img"></span>
+                        <div class="tip-content">
+                            <strong>Periksa Alamat Pengirim</strong>
+                            <p>Cek domain email dengan teliti. Email resmi menggunakan domain perusahaan asli.</p>
+                        </div>
+                    </div>
+                    <div class="tip-nav">
+                        <button onclick="previousTip()" class="tip-btn">⬅️ Sebelum</button>
+                        <span id="tipCounter">1/8</span>
+                        <button onclick="nextTip()" class="tip-btn">Berikut ➡️</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Email Detail Modal -->
+    <div id="emailModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h2>📧 Email Analysis</h2>
+                <button onclick="closeEmailModal()" class="close-btn">&times;</button>
+            </div>
+            <div class="modal-body">
+                <div id="emailDetails" class="email-details">
+                    <!-- Email details will be populated here -->
+                </div>
+                <div class="classification-section">
+                    <h3>🎯 Your Classification</h3>
+                    <p>Based on your analysis, classify this email:</p>
+                    <div class="classification-buttons">
+                        <button class="classification-btn legitimate" onclick="classifyEmail('legitimate')">
+                            <span class="btn-icon"><img src="assets/img/check.png" alt="Check" class="emoji-img"></span>
+                            <div class="btn-content">
+                                <strong>Legitimate</strong><br>
+                                <small>This email is safe and genuine</small>
+                            </div>
+                        </button>
+                        <button class="classification-btn phishing" onclick="classifyEmail('phishing')">
+                            <span class="btn-icon"><img src="assets/img/warning.png" alt="Warning" class="emoji-img"></span>
+                            <div class="btn-content">
+                                <strong>Phishing</strong><br>
+                                <small>This email is suspicious</small>
+                            </div>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Result Modal -->
+    <div id="resultModal" class="modal" style="display: none;">
+        <div class="modal-content">
+            <div class="result-header">
+                <div id="resultIcon" class="result-icon"><img src="assets/img/check.png" alt="Check" class="emoji-img"></div>
+                <h2 id="resultTitle">Excellent Detection!</h2>
+            </div>
+            <div class="result-body">
+                <p id="resultMessage">Congratulations! Your phishing detection skills are improving.</p>
+                <div id="resultExplanation" class="result-explanation"></div>
+                <div id="resultRedFlags" class="result-red-flags" style="display: none;"></div>
+            </div>
+            <div class="result-actions">
+                <button onclick="closeResultModal()" class="btn-primary">Next Email</button>
+            </div>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <div class="container">
+            <p>📧 Email Phishing Simulator</p>
+            <p>&copy; 2025 Virtual Lab TPB ITB - Literasi Digital</p>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script>
+        // Global Variables
+        let currentEmail = null;
+        let currentDifficulty = 'medium';
+        let emailStreak = 0;
+        let stats = {
+            totalAttempts: 0,
+            correctDetections: 0,
+            emailScore: { correct: 0, total: 0 }
+        };
+
+        // Sample Email Data
+        const emailTemplates = {
+            easy: {
+                legitimate: [
+                    {
+                        sender: "ITB Official",
+                        email: "noreply@itb.ac.id", 
+                        subject: "Jadwal Kuliah Semester Baru",
+                        preview: "Jadwal kuliah untuk semester genap 2025 telah tersedia...",
+                        body: "Yth. Mahasiswa TPB ITB,\n\nJadwal kuliah untuk semester genap 2025 telah tersedia di portal akademik. Silakan login ke portal untuk melihat jadwal lengkap Anda.\n\nSalam,\nDirektorat Akademik ITB",
+                        time: "2 jam lalu",
+                        isPhishing: false
+                    }
+                ],
+                phishing: [
+                    {
+                        sender: "Bank Mandiri",
+                        email: "security@bank-mandiri.tk",
+                        subject: "URGENT: Akun akan diblokir!",
+                        preview: "Verifikasi sekarang atau akun diblokir permanen!",
+                        body: "PERINGATAN!\n\nAkun Anda akan diblokir. Klik link: http://bankmandiri-verify.tk/login\n\nCustomer Service",
+                        time: "30 menit lalu",
+                        isPhishing: true,
+                        redFlags: ["Domain .tk mencurigakan", "Bahasa mendesak", "Link eksternal"]
+                    }
+                ]
+            },
+            medium: {
+                legitimate: [
+                    {
+                        sender: "Netflix",
+                        email: "info@netflix.com",
+                        subject: "Film baru telah ditambahkan",
+                        preview: "Berdasarkan riwayat tontonan, kami merekomendasikan...",
+                        body: "Halo,\n\nFilm dan series baru telah ditambahkan:\n• Stranger Things Season 4\n• The Crown Season 5\n\nSelamat menonton!\nTim Netflix",
+                        time: "3 jam lalu",
+                        isPhishing: false
+                    }
+                ],
+                phishing: [
+                    {
+                        sender: "WhatsApp",
+                        email: "support@whatsap-security.com",
+                        subject: "Verifikasi Akun WhatsApp",
+                        preview: "Akun WhatsApp perlu diverifikasi untuk keamanan...",
+                        body: "Halo,\n\nUntuk keamanan, verifikasi akun di: http://whatsapp-verify.ml/confirm\n\nTim WhatsApp Security",
+                        time: "1 jam lalu",
+                        isPhishing: true,
+                        redFlags: ["Typo di domain", "Domain .ml", "Meminta verifikasi via email"]
+                    }
+                ]
+            },
+            hard: {
+                legitimate: [
+                    {
+                        sender: "Microsoft Security",
+                        email: "account-security-noreply@accountprotection.microsoft.com",
+                        subject: "Aktivitas masuk tidak biasa",
+                        preview: "Kami mendeteksi aktivitas masuk dari lokasi baru...",
+                        body: "Halo,\n\nAkun Microsoft Anda diakses dari:\nLokasi: Jakarta\nPerangkat: Chrome\nWaktu: 23 Sep 2025, 15:45\n\nJika ini Anda, abaikan pesan ini.\n\nTim Microsoft",
+                        time: "2 jam lalu",
+                        isPhishing: false
+                    }
+                ],
+                phishing: [
+                    {
+                        sender: "PayPal Service", 
+                        email: "service@paypal.com",
+                        subject: "Konfirmasi pembayaran diperlukan",
+                        preview: "Pembayaran $299.99 memerlukan konfirmasi...",
+                        body: "Dear Customer,\n\nPembayaran: $299.99\nPenerima: TechStore Inc.\nID: PP-7X8Y-9Z1A\n\nKonfirmasi: https://paypal-secure.verification-center.com/confirm\n\nPayPal Service",
+                        time: "15 menit lalu",
+                        isPhishing: true,
+                        redFlags: ["URL bukan paypal.com", "Subdomain mencurigakan", "Nilai transaksi besar"]
+                    }
+                ]
+            }
+        };
+
+        // Tips Data
+        const tips = [
+            {
+                icon: '<img src="assets/img/target.png" alt="Target" class="emoji-img">',
+                title: "Periksa Alamat Pengirim", 
+                content: "Cek domain email dengan teliti. Email resmi menggunakan domain perusahaan asli."
+            },
+            {
+                icon: '<img src="assets/img/warning.png" alt="Warning" class="emoji-img">',
+                title: "Waspada Bahasa Mendesak",
+                content: "Email phishing sering menggunakan kata-kata seperti 'URGENT', 'SEGERA', atau 'DALAM 24 JAM'."
+            },
+            {
+                icon: "🔗",
+                title: "Hover Sebelum Klik",
+                content: "Arahkan mouse ke link untuk melihat URL tujuan sebenarnya sebelum diklik."
+            },
+            {
+                icon: '<img src="assets/img/target.png" alt="Target" class="emoji-img">',
+                title: "Perhatikan Grammar",
+                content: "Email phishing sering memiliki kesalahan tata bahasa atau ejaan yang tidak wajar."
+            },
+            {
+                icon: "🏢",
+                title: "Verifikasi dengan Perusahaan", 
+                content: "Jika ragu, hubungi perusahaan langsung melalui channel resmi mereka."
+            },
+            {
+                icon: '<img src="assets/img/check.png" alt="Check" class="emoji-img">',
+                title: "Jangan Berikan Info Pribadi",
+                content: "Perusahaan legitimate tidak akan meminta password atau info sensitif via email."
+            },
+            {
+                icon: '<img src="assets/img/warning.png" alt="Warning" class="emoji-img">', 
+                title: "Cek di Perangkat Lain",
+                content: "Buka website resmi di browser terpisah untuk memverifikasi informasi."
+            },
+            {
+                icon: '<img src="assets/img/check.png" alt="Check" class="emoji-img">',
+                title: "Pastikan HTTPS",
+                content: "Website resmi untuk transaksi selalu menggunakan protokol HTTPS yang aman."
+            }
+        ];
+
+        let currentTipIndex = 0;
+
+        // Initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            generateEmails();
+            updateTipDisplay();
+            startTipsRotation();
+            updateStats();
+            updateProgress();
+        });
+
+        // Generate Emails
+        function generateEmails() {
+            const emailList = document.getElementById('emailList');
+            const difficultyEmails = emailTemplates[currentDifficulty];
+            
+            if (!difficultyEmails) return;
+
+            const allEmails = [...difficultyEmails.legitimate, ...difficultyEmails.phishing];
+            const shuffledEmails = shuffleArray([...allEmails]);
+
+            emailList.innerHTML = '';
+            document.getElementById('emailCount').textContent = `${shuffledEmails.length} emails`;
+
+            shuffledEmails.forEach((email, index) => {
+                const emailItem = createEmailItem(email, index);
+                emailList.appendChild(emailItem);
+            });
+        }
+
+        function createEmailItem(email, index) {
+            const emailDiv = document.createElement('div');
+            emailDiv.className = `email-item ${email.isPhishing ? 'phishing' : ''} unread`;
+            emailDiv.onclick = () => showEmailDetails(email);
+
+            const avatarColor = getAvatarColor(email.sender);
+            const avatarLetter = email.sender.charAt(0).toUpperCase();
+            
+            let flagClass = 'email-flag';
+            if (email.isPhishing) {
+                flagClass += currentDifficulty === 'easy' ? ' danger' : (currentDifficulty === 'medium' ? ' warning' : '');
+            }
+
+            emailDiv.innerHTML = `
+                <div class="email-avatar" style="background-color: ${avatarColor}">
+                    ${avatarLetter}
+                </div>
+                <div class="email-content">
+                    <div class="email-sender">${email.sender}</div>
+                    <div class="email-subject">${email.subject}</div>
+                    <div class="email-preview">${email.preview}</div>
+                </div>
+                <div class="email-time">${email.time}</div>
+                <div class="${flagClass}"></div>
+            `;
+
+            return emailDiv;
+        }
+
+        function getAvatarColor(sender) {
+            const colors = ['#6366f1', '#8b5cf6', '#ec4899', '#ef4444', '#f59e0b', '#10b981', '#06b6d4', '#84cc16'];
+            const hash = sender.split('').reduce((a, b) => {
+                a = ((a << 5) - a) + b.charCodeAt(0);
+                return a & a;
+            }, 0);
+            return colors[Math.abs(hash) % colors.length];
+        }
+
+        function showEmailDetails(email) {
+            currentEmail = email;
+            const modal = document.getElementById('emailModal');
+            const emailDetails = document.getElementById('emailDetails');
+            
+            emailDetails.innerHTML = `
+                <div class="email-header">
+                    <div class="email-from">
+                        <strong>From:</strong> ${email.sender} &lt;${email.email}&gt;
+                    </div>
+                    <div class="email-subject">${email.subject}</div>
+                    <div class="email-time">${email.time}</div>
+                </div>
+                <div class="email-body">
+                    ${email.body.replace(/\n/g, '<br>')}
+                </div>
+            `;
+            
+            modal.style.display = 'flex';
+        }
+
+        function closeEmailModal() {
+            document.getElementById('emailModal').style.display = 'none';
+        }
+
+        function closeResultModal() {
+            document.getElementById('resultModal').style.display = 'none';
+            generateEmails();
+        }
+
+        function classifyEmail(classification) {
+            if (!currentEmail) return;
+
+            const isCorrect = (classification === 'phishing') === currentEmail.isPhishing;
+            
+            stats.emailScore.total++;
+            
+            if (isCorrect) {
+                stats.emailScore.correct++;
+                emailStreak++;
+                showResult(true, "Jawaban benar!");
+            } else {
+                emailStreak = 0;
+                showResult(false, "Jawaban salah!");
+            }
+
+            updateStats();
+            updateProgress();
+            closeEmailModal();
+        }
+
+        function showResult(isCorrect, message) {
+            const modal = document.getElementById('resultModal');
+            const icon = document.getElementById('resultIcon');
+            const title = document.getElementById('resultTitle');
+            const resultMessage = document.getElementById('resultMessage');
+            
+            icon.innerHTML = isCorrect ? '<img src="assets/img/check.png" alt="Check" class="emoji-img">' : '<img src="assets/img/wrong.png" alt="Wrong" class="emoji-img">';
+            title.textContent = isCorrect ? 'Correct!' : 'Incorrect!';
+            resultMessage.textContent = message;
+            
+            modal.style.display = 'flex';
+        }
+
+        // Tips Functions
+        function nextTip() {
+            currentTipIndex = (currentTipIndex + 1) % tips.length;
+            updateTipDisplay();
+        }
+
+        function previousTip() {
+            currentTipIndex = (currentTipIndex - 1 + tips.length) % tips.length;
+            updateTipDisplay();
+        }
+
+        function updateTipDisplay() {
+            const tip = tips[currentTipIndex];
+            const currentTipEl = document.getElementById('currentTip');
+            const tipCounterEl = document.getElementById('tipCounter');
+            
+            if (currentTipEl && tipCounterEl) {
+                currentTipEl.innerHTML = `
+                    <span class="tip-icon">${tip.icon}</span>
+                    <div class="tip-content">
+                        <strong>${tip.title}</strong>
+                        <p>${tip.content}</p>
+                    </div>
+                `;
+                tipCounterEl.textContent = `${currentTipIndex + 1}/${tips.length}`;
+            }
+        }
+
+        function startTipsRotation() {
+            setInterval(nextTip, 8000);
+        }
+
+        // Utility Functions
+        function setDifficulty(difficulty) {
+            currentDifficulty = difficulty;
+            generateEmails();
+        }
+
+        function updateStats() {
+            document.getElementById('emailCorrect').textContent = stats.emailScore.correct;
+            document.getElementById('emailTotal').textContent = stats.emailScore.total;
+            document.getElementById('emailStreak').textContent = emailStreak;
+            
+            const accuracy = stats.emailScore.total > 0 ? Math.round((stats.emailScore.correct / stats.emailScore.total) * 100) : 0;
+            document.getElementById('accuracy').textContent = accuracy + '%';
+        }
+
+        function updateProgress() {
+            const progressBar = document.getElementById('progressBar');
+            const accuracy = stats.emailScore.total > 0 ? (stats.emailScore.correct / stats.emailScore.total) * 100 : 0;
+            progressBar.style.width = accuracy + '%';
+        }
+
+        function resetStats() {
+            if(confirm('Yakin ingin reset semua statistik?')) {
+                stats.emailScore.correct = 0;
+                stats.emailScore.total = 0;
+                emailStreak = 0;
+                updateStats();
+                updateProgress();
+            }
+        }
+
+        function selectAllEmails() {
+            const emailItems = document.querySelectorAll('.email-item');
+            emailItems.forEach(item => {
+                item.classList.add('selected');
+                item.style.background = 'linear-gradient(135deg, #dbeafe, #bfdbfe)';
+            });
+        }
+
+        function markAsRead() {
+            const emailItems = document.querySelectorAll('.email-item.unread');
+            emailItems.forEach(item => {
+                item.classList.remove('unread');
+                item.classList.add('read');
+                item.style.opacity = '0.7';
+            });
+        }
+
+        function shuffleArray(array) {
+            const shuffled = [...array];
+            for (let i = shuffled.length - 1; i > 0; i--) {
+                const j = Math.floor(Math.random() * (i + 1));
+                [shuffled[i], shuffled[j]] = [shuffled[j], shuffled[i]];
+            }
+            return shuffled;
+        }
+    </script>
+
+    <!-- Additional Modal Styles -->
+    <style>
+        .modal {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.5);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+        }
+
+        .modal-content {
+            background: white;
+            border-radius: 16px;
+            max-width: 600px;
+            width: 90%;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .modal-header {
+            padding: 1.5rem;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .close-btn {
+            background: none;
+            border: none;
+            font-size: 1.5rem;
+            cursor: pointer;
+            padding: 0.5rem;
+            border-radius: 8px;
+            transition: all 0.3s ease;
+        }
+
+        .close-btn:hover {
+            background: #f3f4f6;
+        }
+
+        .modal-body {
+            padding: 1.5rem;
+        }
+
+        /* Compact Button Styles */
+        .action-buttons-compact {
+            display: flex;
+            gap: 0.75rem;
+            margin-top: 1rem;
+        }
+
+        .btn-compact {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            border: none;
+            border-radius: 8px;
+            font-weight: 500;
+            font-size: 0.875rem;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+            flex: 1;
+        }
+
+        .btn-compact.btn-primary {
+            background: linear-gradient(135deg, #6366f1, #8b5cf6);
+            color: white;
+        }
+
+        .btn-compact.btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.3);
+        }
+
+        .btn-compact.btn-secondary {
+            background: linear-gradient(135deg, #64748b, #475569);
+            color: white;
+        }
+
+        .btn-compact.btn-secondary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(100, 116, 139, 0.3);
+        }
+
+        .btn-icon-small {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .emoji-img-small {
+            width: 16px;
+            height: 16px;
+            object-fit: contain;
+        }
+
+        /* Fix navbar alignment */
+        .nav-brand {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+        }
+
+        .email-details {
+            margin-bottom: 2rem;
+        }
+
+        .email-header {
+            background: #f8fafc;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+        }
+
+        .email-from {
+            margin-bottom: 0.5rem;
+            font-size: 0.9rem;
+        }
+
+        .email-subject {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .email-time {
+            font-size: 0.8rem;
+            color: #6b7280;
+        }
+
+        .email-body {
+            line-height: 1.6;
+            color: #4b5563;
+        }
+
+        .classification-section {
+            text-align: center;
+        }
+
+        .classification-buttons {
+            display: flex;
+            gap: 1rem;
+            justify-content: center;
+            margin-top: 1rem;
+        }
+
+        .classification-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 1rem;
+            border: 2px solid;
+            border-radius: 12px;
+            background: white;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            min-width: 120px;
+        }
+
+        .classification-btn.legitimate {
+            border-color: #10b981;
+            color: #10b981;
+        }
+
+        .classification-btn.legitimate:hover {
+            background: #d1fae5;
+        }
+
+        .classification-btn.phishing {
+            border-color: #ef4444;
+            color: #ef4444;
+        }
+
+        .classification-btn.phishing:hover {
+            background: #fee2e2;
+        }
+
+        .result-header {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .result-icon {
+            font-size: 4rem;
+            margin-bottom: 1rem;
+        }
+
+        .result-actions {
+            padding: 1rem 2rem;
+            text-align: center;
+        }
+
+        .tip-nav {
+            margin-top: 0.5rem !important;
+        }
+    </style>
+</body>
+</html>

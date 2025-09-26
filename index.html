@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Virtual Lab - Phishing Simulator TPB ITB</title>
+    <link rel="stylesheet" href="assets/css/style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <img src="assets/img/PhishX.png" alt="PhishX Logo" class="nav-brand-logo">
+                <div class="nav-brand-text">
+                    <span>Virtual Lab Literasi Digital TPB ITB</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn active" onclick="window.location.href='index.html'">Home</button>
+                <button class="nav-btn" onclick="window.location.href='emailsimulator.html'">Email Simulator</button>
+                <button class="nav-btn" onclick="window.location.href='materi.html'">Materi</button>
+                <button class="nav-btn" onclick="window.location.href='quiz.html'">Quiz</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- Home Section -->
+        <section id="home" class="section active">
+            <div class="hero">
+                <h2>Selamat Datang di PhishX Lab</h2>
+                <p>Virtual Lab interaktif untuk belajar mengenali dan menghindari serangan phishing online</p>
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-number" id="totalAttempts">0</div>
+                        <div class="stat-label">Total Percobaan</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="correctDetections">0</div>
+                        <div class="stat-label">Deteksi Benar</div>
+                    </div>
+                    <div class="stat-card">
+                        <div class="stat-number" id="accuracy">0%</div>
+                        <div class="stat-label">Akurasi</div>
+                    </div>
+                </div>
+                <button class="cta-button" onclick="window.location.href='materi.html'">Mulai Belajar</button>
+            </div>
+        </section>
+
+        <!-- Email Simulator Section -->
+        <section id="simulator" class="section">
+            <h2>📧 Email Phishing Simulator</h2>
+            <p>Pilih email mana yang menurut Anda legitimate atau phishing</p>
+            
+            <div class="email-container">
+                <div class="inbox-header">
+                    <h3>📥 Inbox Simulator</h3>
+                    <div class="inbox-controls">
+                        <button onclick="generateEmails()" class="refresh-btn">🔄 Generate New Emails</button>
+                    </div>
+                </div>
+                
+                <div id="emailList" class="email-list">
+                    <!-- Emails will be dynamically generated here -->
+                </div>
+            </div>
+
+            <div id="emailModal" class="modal">
+                <div class="modal-content">
+                    <span class="close">&times;</span>
+                    <div id="emailDetails" class="email-details">
+                        <!-- Email details will be shown here -->
+                    </div>
+                    <div class="email-actions">
+                        <button class="btn-legitimate" onclick="classifyEmail('legitimate')">✅ Legitimate</button>
+                        <button class="btn-phishing" onclick="classifyEmail('phishing')">⚠️ Phishing</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Website Test Section -->
+        <section id="website" class="section">
+            <h2>🌐 Website Phishing Test</h2>
+            <p>Uji kemampuan Anda mengenali website phishing palsu</p>
+            
+            <div class="website-container">
+                <div class="website-frame">
+                    <div class="browser-bar">
+                        <div class="browser-controls">
+                            <span class="control red"></span>
+                            <span class="control yellow"></span>
+                            <span class="control green"></span>
+                        </div>
+                        <div class="address-bar">
+                            <span id="currentURL">https://www.facebook.com/login</span>
+                            <span id="securityIcon">🔒</span>
+                        </div>
+                    </div>
+                    <div id="websiteContent" class="website-content">
+                        <!-- Website content will be loaded here -->
+                    </div>
+                </div>
+                <div class="website-controls">
+                    <button onclick="loadRandomWebsite()" class="load-btn">🎲 Load Random Website</button>
+                    <div class="classification-buttons">
+                        <button class="btn-safe" onclick="classifyWebsite('safe')">✅ Safe Website</button>
+                        <button class="btn-suspicious" onclick="classifyWebsite('phishing')">⚠️ Phishing Website</button>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Quiz Section -->
+        <section id="quiz" class="section">
+            <h2>📝 Interactive Quiz</h2>
+            <div id="quizContainer" class="quiz-container">
+                <div id="quizProgress" class="quiz-progress">
+                    <div class="progress-bar">
+                        <div id="progressFill" class="progress-fill"></div>
+                    </div>
+                    <span id="questionCounter">Pertanyaan 1 dari 10</span>
+                </div>
+                
+                <div id="quizContent" class="quiz-content">
+                    <!-- Quiz questions will be loaded here -->
+                </div>
+            </div>
+        </section>
+
+        <!-- Results Section -->
+        <section id="results" class="section">
+            <h2>📊 Hasil & Statistik</h2>
+            <div class="results-container">
+                <div class="results-summary">
+                    <h3>Ringkasan Performance</h3>
+                    <div class="performance-grid">
+                        <div class="performance-card">
+                            <h4>Email Simulator</h4>
+                            <div class="score" id="emailScore">0/0</div>
+                            <div class="percentage" id="emailPercentage">0%</div>
+                        </div>
+                        <div class="performance-card">
+                            <h4>Website Test</h4>
+                            <div class="score" id="websiteScore">0/0</div>
+                            <div class="percentage" id="websitePercentage">0%</div>
+                        </div>
+                        <div class="performance-card">
+                            <h4>Quiz Score</h4>
+                            <div class="score" id="quizScore">0/0</div>
+                            <div class="percentage" id="quizPercentage">0%</div>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="learning-tips">
+                    <h3>💡 Tips Keamanan</h3>
+                    <ul id="securityTips">
+                        <li>Selalu periksa URL dengan teliti sebelum memasukkan informasi sensitif</li>
+                        <li>Waspada terhadap email yang meminta informasi pribadi dengan urgent</li>
+                        <li>Verifikasi identitas pengirim melalui channel yang berbeda</li>
+                        <li>Gunakan two-factor authentication untuk akun penting</li>
+                        <li>Update browser dan antivirus secara berkala</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Warning Modal -->
+    <div id="warningModal" class="modal warning-modal">
+        <div class="modal-content warning-content">
+            <div class="warning-icon">⚠️</div>
+            <h3>PERINGATAN!</h3>
+            <p id="warningMessage">Ini adalah website phishing!</p>
+            <div class="warning-details" id="warningDetails">
+                <!-- Warning details will be shown here -->
+            </div>
+            <button onclick="closeWarning()" class="warning-close-btn">Mengerti</button>
+        </div>
+    </div>
+
+    <footer class="footer">
+        <p>&copy; 2025 Virtual Lab TPB ITB - Literasi Digital</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>

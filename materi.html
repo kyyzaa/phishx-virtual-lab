@@ -1,0 +1,1149 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Materi - Phishing & Keamanan Digital</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* Reset & Base Styles */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: #333;
+            line-height: 1.6;
+            scroll-behavior: smooth;
+        }
+
+        /* Header */
+        .header {
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            padding: 1rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+            animation: slideDown 0.6s ease-out;
+        }
+
+        .navbar {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 2rem;
+        }
+
+        .nav-brand {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .nav-brand-logo {
+            width: 70px;
+            height: 70px;
+            object-fit: contain;
+        }
+
+        .nav-brand-text span {
+            font-size: 1rem;
+            color: #374151;
+            font-weight: 600;
+            line-height: 1.2;
+        }
+
+        .nav-menu {
+            display: flex;
+            gap: 1rem;
+            align-items: center;
+        }
+
+        .nav-btn {
+            padding: 0.75rem 1.5rem;
+            border: none;
+            border-radius: 12px;
+            background: transparent;
+            color: #6b7280;
+            text-decoration: none;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .nav-btn:hover, .nav-btn.active {
+            background: #6366f1;
+            color: white;
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px rgba(99, 102, 241, 0.3);
+        }
+
+        /* Main Content */
+        .main-content {
+            max-width: 1000px;
+            margin: 0 auto;
+            padding: 2rem;
+        }
+
+        /* Hero Section */
+        .material-header {
+            text-align: center;
+            background: white;
+            border-radius: 20px;
+            padding: 4rem 2rem;
+            box-shadow: 0 20px 40px rgba(0, 0, 0, 0.1);
+            margin-bottom: 3rem;
+            position: relative;
+            overflow: hidden;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .material-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(45deg, rgba(99, 102, 241, 0.05), rgba(139, 92, 246, 0.05));
+            z-index: -1;
+        }
+
+        .material-header h1 {
+            font-size: 3rem;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            background-clip: text;
+            -webkit-text-fill-color: transparent;
+            margin-bottom: 1rem;
+            animation: textGlow 2s ease-in-out infinite alternate;
+        }
+
+        .material-header p {
+            font-size: 1.2rem;
+            color: #6b7280;
+            margin-bottom: 2rem;
+        }
+
+        /* Progress Bar */
+        .progress-container {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 4px;
+            background: rgba(255, 255, 255, 0.2);
+            z-index: 1000;
+        }
+
+        .progress-bar {
+            height: 100%;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+            width: 0%;
+            transition: width 0.3s ease;
+        }
+
+        /* Table of Contents */
+        .toc-container {
+            background: white;
+            border-radius: 16px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            animation: fadeInUp 0.8s ease-out 0.2s both;
+        }
+
+        .toc-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .toc-icon {
+            font-size: 2rem;
+            animation: bounce 2s ease-in-out infinite;
+        }
+
+        .toc-title {
+            font-size: 1.5rem;
+            font-weight: 600;
+            color: #374151;
+        }
+
+        .toc-list {
+            list-style: none;
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1rem;
+        }
+
+        .toc-item {
+            padding: 1rem;
+            background: #f8fafc;
+            border-radius: 12px;
+            border-left: 4px solid #6366f1;
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .toc-item:hover {
+            background: #dbeafe;
+            transform: translateX(4px);
+            box-shadow: 0 4px 12px rgba(99, 102, 241, 0.2);
+        }
+
+        .toc-item a {
+            text-decoration: none;
+            color: #374151;
+            font-weight: 500;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .toc-emoji {
+            font-size: 1.2rem;
+        }
+
+        /* Material Sections */
+        .material-section {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.1);
+            position: relative;
+            overflow: hidden;
+            opacity: 0;
+            transform: translateY(30px);
+            transition: all 0.6s ease;
+        }
+
+        .material-section.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        .material-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 6px;
+            background: linear-gradient(90deg, #6366f1, #8b5cf6);
+        }
+
+        .section-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 2rem;
+            cursor: pointer;
+        }
+
+        .section-icon {
+            font-size: 2.5rem;
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        .material-section h2 {
+            font-size: 2rem;
+            font-weight: 700;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .material-section p {
+            font-size: 1.1rem;
+            color: #4b5563;
+            margin-bottom: 1.5rem;
+            line-height: 1.8;
+        }
+
+        /* Enhanced Lists */
+        .enhanced-list {
+            list-style: none;
+            margin: 1.5rem 0;
+        }
+
+        .list-item {
+            background: #f8fafc;
+            margin-bottom: 1rem;
+            padding: 1.5rem;
+            border-radius: 12px;
+            border-left: 4px solid #10b981;
+            transition: all 0.3s ease;
+            position: relative;
+            cursor: pointer;
+        }
+
+        .list-item:hover {
+            background: #ecfdf5;
+            transform: translateX(8px);
+            box-shadow: 0 4px 15px rgba(16, 185, 129, 0.15);
+        }
+
+        .list-item::before {
+            content: '✓';
+            position: absolute;
+            left: -12px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #10b981;
+            color: white;
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            font-size: 0.8rem;
+        }
+
+        /* Red Flags Section */
+        .red-flags-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .flag-card {
+            background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            border: 2px solid #ef4444;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .flag-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 10px 25px rgba(239, 68, 68, 0.3);
+        }
+
+        .flag-card::before {
+            content: '🚩';
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            font-size: 3rem;
+            opacity: 0.3;
+        }
+
+        .flag-title {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #dc2626;
+            margin-bottom: 1rem;
+        }
+
+        .flag-example {
+            background: white;
+            padding: 1rem;
+            border-radius: 8px;
+            margin-bottom: 1rem;
+            font-family: monospace;
+            border: 1px solid #fca5a5;
+        }
+
+        /* Interactive Examples */
+        .example-container {
+            margin: 2rem 0;
+        }
+
+        .example-tabs {
+            display: flex;
+            background: #f3f4f6;
+            border-radius: 12px;
+            padding: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .tab-button {
+            flex: 1;
+            padding: 1rem;
+            border: none;
+            background: transparent;
+            border-radius: 8px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .tab-button.active {
+            background: white;
+            color: #6366f1;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .tab-content {
+            display: none;
+            background: white;
+            padding: 2rem;
+            border-radius: 12px;
+            border: 2px solid #e5e7eb;
+        }
+
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+
+        /* Case Studies */
+        .case-study {
+            background: linear-gradient(135deg, #dbeafe 0%, #bfdbfe 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            margin: 1rem 0;
+            border-left: 6px solid #3b82f6;
+            position: relative;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .case-study:hover {
+            transform: scale(1.02);
+            box-shadow: 0 8px 25px rgba(59, 130, 246, 0.2);
+        }
+
+        .case-title {
+            font-weight: 600;
+            color: #1e40af;
+            margin-bottom: 1rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .case-icon {
+            font-size: 1.5rem;
+            animation: rotate 3s linear infinite;
+        }
+
+        /* Interactive Quiz */
+        .mini-quiz {
+            background: linear-gradient(135deg, #f3e8ff 0%, #e9d5ff 100%);
+            padding: 2rem;
+            border-radius: 16px;
+            margin: 2rem 0;
+            border: 2px solid #8b5cf6;
+        }
+
+        .quiz-question {
+            font-weight: 600;
+            color: #6b21a8;
+            margin-bottom: 1rem;
+            font-size: 1.1rem;
+        }
+
+        .quiz-options {
+            display: grid;
+            gap: 0.5rem;
+        }
+
+        .quiz-option {
+            padding: 1rem;
+            background: white;
+            border: 2px solid #c4b5fd;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .quiz-option:hover {
+            background: #f3e8ff;
+            border-color: #8b5cf6;
+        }
+
+        .quiz-option.correct {
+            background: #d1fae5;
+            border-color: #10b981;
+            color: #065f46;
+        }
+
+        .quiz-option.incorrect {
+            background: #fee2e2;
+            border-color: #ef4444;
+            color: #991b1b;
+        }
+
+        /* Call to Action */
+        .cta-section {
+            text-align: center;
+            background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+            color: white;
+            padding: 4rem 2rem;
+            border-radius: 20px;
+            margin: 3rem 0;
+            animation: fadeInUp 0.8s ease-out;
+        }
+
+        .cta-title {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-button {
+            display: inline-block;
+            background: white;
+            color: #6366f1;
+            padding: 1.5rem 3rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            margin: 1rem 0.5rem;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.3);
+        }
+
+        /* Footer */
+        .footer {
+            text-align: center;
+            padding: 2rem;
+            color: rgba(255, 255, 255, 0.8);
+            margin-top: 3rem;
+        }
+
+        /* Animations */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        @keyframes bounce {
+            0%, 20%, 50%, 80%, 100% {
+                transform: translateY(0);
+            }
+            40% {
+                transform: translateY(-10px);
+            }
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                transform: scale(1);
+            }
+            50% {
+                transform: scale(1.05);
+            }
+        }
+
+        @keyframes rotate {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        @keyframes textGlow {
+            from {
+                text-shadow: 0 0 20px rgba(99, 102, 241, 0.5);
+            }
+            to {
+                text-shadow: 0 0 30px rgba(139, 92, 246, 0.7);
+            }
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .navbar {
+                flex-direction: column;
+                gap: 1rem;
+                padding: 1rem;
+            }
+
+            .main-content {
+                padding: 1rem;
+            }
+
+            .material-header h1 {
+                font-size: 2rem;
+            }
+
+            .material-section {
+                padding: 2rem;
+            }
+
+            .red-flags-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-title {
+                font-size: 2rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Progress Bar -->
+    <div class="progress-container">
+        <div class="progress-bar" id="progressBar"></div>
+    </div>
+
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-brand">
+                <img src="assets/img/PhishX.png" alt="PhishX Logo" class="nav-brand-logo">
+                <div class="nav-brand-text">
+                    <span>Virtual Lab Literasi Digital TPB ITB</span>
+                </div>
+            </div>
+            <div class="nav-menu">
+                <button class="nav-btn" onclick="window.location.href='index.html'">Home</button>
+                <button class="nav-btn" onclick="window.location.href='emailsimulator.html'">Email Simulator</button>
+                <button class="nav-btn active" onclick="window.location.href='materi.html'">Materi</button>
+                <button class="nav-btn" onclick="window.location.href='quiz.html'">Quiz</button>
+            </div>
+        </nav>
+    </header>
+
+    <main class="main-content">
+        <!-- Hero Section -->
+        <header class="material-header">
+            <h1>🎓 Materi: Phishing & Keamanan Digital</h1>
+            <p>Panduan lengkap untuk memahami dan menghindari serangan phishing</p>
+        </header>
+
+        <!-- Table of Contents -->
+        <div class="toc-container">
+            <div class="toc-header">
+                <div class="toc-icon">📚</div>
+                <div class="toc-title">Daftar Isi</div>
+            </div>
+            <ul class="toc-list">
+                <li class="toc-item">
+                    <a href="#section1">
+                        <span class="toc-emoji">📧</span>
+                        Apa itu Phishing?
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#section2">
+                        <span class="toc-emoji">🚩</span>
+                        Red Flags yang Harus Dikenali
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#section3">
+                        <span class="toc-emoji">🛡️</span>
+                        Cara Melindungi Diri
+                    </a>
+                </li>
+                <li class="toc-item">
+                    <a href="#section4">
+                        <span class="toc-emoji">📚</span>
+                        Studi Kasus Nyata
+                    </a>
+                </li>
+            </ul>
+        </div>
+
+        <!-- Section 1: Apa itu Phishing -->
+        <section class="material-section" id="section1">
+            <div class="section-header">
+                <div class="section-icon">📧</div>
+                <h2>Apa itu Phishing?</h2>
+            </div>
+            
+            <p>
+                Phishing adalah upaya penipuan dengan cara menyamar sebagai pihak terpercaya 
+                (misalnya bank, kampus, atau media sosial) untuk mencuri informasi sensitif 
+                seperti username, password, atau data finansial.
+            </p>
+
+            <ul class="enhanced-list">
+                <li class="list-item">
+                    <strong>Email & Pesan Palsu:</strong> Biasanya datang dalam bentuk email, pesan singkat, atau website palsu yang meniru institusi terpercaya.
+                </li>
+                <li class="list-item">
+                    <strong>Tampilan Menyerupai Asli:</strong> Meniru tampilan asli dengan sangat mirip hingga sulit dibedakan dengan mata biasa.
+                </li>
+                <li class="list-item">
+                    <strong>Menciptakan Urgensi:</strong> Memanfaatkan urgensi dan rasa takut korban agar segera bertindak tanpa berpikir panjang.
+                </li>
+                <li class="list-item">
+                    <strong>Target Informasi Sensitif:</strong> Bertujuan mencuri data pribadi seperti password, nomor kartu kredit, atau informasi keuangan.
+                </li>
+            </ul>
+
+            <!-- Mini Quiz -->
+            <div class="mini-quiz">
+                <div class="quiz-question">
+                    🤔 Quick Check: Manakah yang BUKAN termasuk tujuan phishing?
+                </div>
+                <div class="quiz-options" id="quiz1">
+                    <div class="quiz-option" onclick="selectAnswer(1, 0, false)">A. Mencuri password akun</div>
+                    <div class="quiz-option" onclick="selectAnswer(1, 1, false)">B. Mengambil data kartu kredit</div>
+                    <div class="quiz-option" onclick="selectAnswer(1, 2, true)">C. Memberikan hadiah gratis tanpa syarat</div>
+                    <div class="quiz-option" onclick="selectAnswer(1, 3, false)">D. Mengakses akun media sosial</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 2: Red Flags -->
+        <section class="material-section" id="section2">
+            <div class="section-header">
+                <div class="section-icon">🚩</div>
+                <h2>Red Flags yang Harus Dikenali</h2>
+            </div>
+            
+            <p>Beberapa tanda umum dari email atau website phishing yang wajib Anda waspadai:</p>
+
+            <div class="red-flags-grid">
+                <div class="flag-card">
+                    <div class="flag-title">🎯 Alamat Pengirim Mencurigakan</div>
+                    <div class="flag-example">
+                        ❌ support@gmai1.com<br>
+                        ❌ security@bank-mandiri.tk<br>
+                        ✅ noreply@gmail.com
+                    </div>
+                </div>
+
+                <div class="flag-card">
+                    <div class="flag-title">⚡ Bahasa Terlalu Mendesak</div>
+                    <div class="flag-example">
+                        ❌ "URGENT! Akun akan diblokir dalam 24 jam!"<br>
+                        ❌ "Segera verifikasi atau kehilangan akses!"<br>
+                        ✅ "Pemberitahuan aktivitas akun"
+                    </div>
+                </div>
+
+                <div class="flag-card">
+                    <div class="flag-title">📝 Grammar & Ejaan Buruk</div>
+                    <div class="flag-example">
+                        ❌ "mohon verifikasi akun anda segera"<br>
+                        ❌ "untuk keamanan data pribadi anda"<br>
+                        ✅ "Mohon verifikasi akun Anda segera"
+                    </div>
+                </div>
+
+                <div class="flag-card">
+                    <div class="flag-title">🔗 Link Domain Palsu</div>
+                    <div class="flag-example">
+                        ❌ faceb00k.com<br>
+                        ❌ paypal-verify.tk<br>
+                        ✅ facebook.com
+                    </div>
+                </div>
+
+                <div class="flag-card">
+                    <div class="flag-title">🔒 Tidak Ada HTTPS</div>
+                    <div class="flag-example">
+                        ❌ http://banklogin.com<br>
+                        ❌ Sertifikat keamanan tidak valid<br>
+                        ✅ https://www.bank.com
+                    </div>
+                </div>
+
+                <div class="flag-card">
+                    <div class="flag-title">📎 Attachment Mencurigakan</div>
+                    <div class="flag-example">
+                        ❌ invoice.exe<br>
+                        ❌ document.zip dengan password<br>
+                        ✅ legitimate-document.pdf
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 3: Cara Melindungi Diri -->
+        <section class="material-section" id="section3">
+            <div class="section-header">
+                <div class="section-icon">🛡️</div>
+                <h2>Cara Melindungi Diri</h2>
+            </div>
+            
+            <p>Langkah praktis untuk menghindari serangan phishing:</p>
+
+            <!-- Interactive Tabs -->
+            <div class="example-container">
+                <div class="example-tabs">
+                    <button class="tab-button active" onclick="showTab('prevention')">🛡️ Pencegahan</button>
+                    <button class="tab-button" onclick="showTab('detection')">🔍 Deteksi</button>
+                    <button class="tab-button" onclick="showTab('response')">⚡ Respons</button>
+                </div>
+
+                <div id="prevention" class="tab-content active">
+                    <h3>🛡️ Langkah Pencegahan</h3>
+                    <ul class="enhanced-list">
+                        <li class="list-item">
+                            <strong>Verifikasi URL:</strong> Selalu periksa URL dengan teliti sebelum login atau mengisi data pribadi.
+                        </li>
+                        <li class="list-item">
+                            <strong>Aktifkan 2FA:</strong> Gunakan two-factor authentication pada semua akun penting Anda.
+                        </li>
+                        <li class="list-item">
+                            <strong>Password Unik:</strong> Gunakan password yang kuat dan berbeda untuk setiap akun.
+                        </li>
+                        <li class="list-item">
+                            <strong>Update Rutin:</strong> Selalu update sistem operasi, browser, dan antivirus secara berkala.
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="detection" class="tab-content">
+                    <h3>🔍 Cara Mendeteksi</h3>
+                    <ul class="enhanced-list">
+                        <li class="list-item">
+                            <strong>Hover Link:</strong> Arahkan mouse ke link untuk melihat tujuan sebenarnya.
+                        </li>
+                        <li class="list-item">
+                            <strong>Cek Sender:</strong> Periksa alamat email pengirim dengan detail.
+                        </li>
+                        <li class="list-item">
+                            <strong>Analisis Bahasa:</strong> Perhatikan grammar, ejaan, dan tingkat formalitas.
+                        </li>
+                        <li class="list-item">
+                            <strong>Verifikasi Terpisah:</strong> Buka situs resmi di tab baru untuk memverifikasi.
+                        </li>
+                    </ul>
+                </div>
+
+                <div id="response" class="tab-content">
+                    <h3>⚡ Jika Terkena Phishing</h3>
+                    <ul class="enhanced-list">
+                        <li class="list-item">
+                            <strong>Ganti Password:</strong> Segera ubah password akun yang berpotensi terkena.
+                        </li>
+                        <li class="list-item">
+                            <strong>Hubungi Bank:</strong> Kontak bank jika data finansial mungkin bocor.
+                        </li>
+                        <li class="list-item">
+                            <strong>Monitor Akun:</strong> Periksa aktivitas mencurigakan di semua akun.
+                        </li>
+                        <li class="list-item">
+                            <strong>Laporkan:</strong> Laporkan insiden ke pihak berwenang atau perusahaan terkait.
+                        </li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Section 4: Studi Kasus -->
+        <section class="material-section" id="section4">
+            <div class="section-header">
+                <div class="section-icon">📚</div>
+                <h2>Studi Kasus Nyata</h2>
+            </div>
+            
+            <p>Pelajari dari contoh serangan phishing terkenal dalam sejarah:</p>
+
+            <div class="case-study">
+                <div class="case-title">
+                    <span class="case-icon">📄</span>
+                    Google Docs Phishing (2017)
+                </div>
+                <p>
+                    <strong>Modus:</strong> Email palsu mengajak membuka dokumen Google Docs, ternyata mengarahkan ke aplikasi berbahaya yang meminta akses penuh ke akun Gmail.<br>
+                    <strong>Dampak:</strong> Jutaan pengguna terpengaruh sebelum Google berhasil memblokir serangan ini dalam beberapa jam.<br>
+                    <strong>Pelajaran:</strong> Selalu periksa aplikasi yang meminta akses ke akun Anda.
+                </p>
+            </div>
+
+            <div class="case-study">
+                <div class="case-title">
+                    <span class="case-icon">🏦</span>
+                    Bank Credential Scam
+                </div>
+                <p>
+                    <strong>Modus:</strong> Email yang sangat mirip bank resmi meminta login untuk "memperbarui akun", padahal situs web palsu untuk mencuri kredensial.<br>
+                    <strong>Dampak:</strong> Ribuan nasabah kehilangan akses ke rekening dan mengalami kerugian finansial.<br>
+                    <strong>Pelajaran:</strong> Bank tidak akan pernah meminta login melalui email.
+                </p>
+            </div>
+
+            <div class="case-study">
+                <div class="case-title">
+                    <span class="case-icon">💬</span>
+                    Phishing via WhatsApp
+                </div>
+                <p>
+                    <strong>Modus:</strong> Pesan undangan berhadiah dengan link palsu yang meminta verifikasi data pribadi dan nomor kartu kredit.<br>
+                    <strong>Dampak:</strong> Banyak korban memberikan informasi sensitif karena pesan datang dari "teman" yang akunnya sudah dibajak.<br>
+                    <strong>Pelajaran:</strong> Verifikasi langsung dengan teman jika ada pesan mencurigakan dari mereka.
+                </p>
+            </div>
+
+            <!-- Mini Quiz 2 -->
+            <div class="mini-quiz">
+                <div class="quiz-question">
+                    🤔 Quick Check: Apa yang harus dilakukan jika menerima email "mendesak" dari bank?
+                </div>
+                <div class="quiz-options" id="quiz2">
+                    <div class="quiz-option" onclick="selectAnswer(2, 0, false)">A. Langsung klik link yang disediakan</div>
+                    <div class="quiz-option" onclick="selectAnswer(2, 1, true)">B. Hubungi bank melalui nomor resmi untuk verifikasi</div>
+                    <div class="quiz-option" onclick="selectAnswer(2, 2, false)">C. Reply email untuk konfirmasi</div>
+                    <div class="quiz-option" onclick="selectAnswer(2, 3, false)">D. Forward email ke teman untuk minta pendapat</div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Kesimpulan & CTA -->
+        <div class="cta-section">
+            <h2 class="cta-title">💡 Kesimpulan</h2>
+            <p style="font-size: 1.2rem; margin-bottom: 2rem;">
+                Phishing dapat dicegah dengan <strong>kesadaran digital</strong>, 
+                <strong>kewaspadaan</strong>, dan <strong>kebiasaan aman</strong> dalam 
+                menggunakan internet. Latihan melalui simulator akan membantu Anda 
+                mengenali pola phishing dan menghindari menjadi korban.
+            </p>
+            
+            <div style="margin-top: 2rem;">
+                <a href="index.html" class="cta-button">🏠 Kembali ke Lab</a>
+                <a href="emailsimulator.html" class="cta-button">📧 Mulai Simulator</a>
+                <a href="#section1" class="cta-button">📚 Baca Ulang Materi</a>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <p>&copy; 2025 Virtual Lab TPB ITB - Literasi Digital</p>
+    </footer>
+
+    <script>
+        // Progress Bar
+        window.addEventListener('scroll', () => {
+            const scrolled = (window.scrollY / (document.documentElement.scrollHeight - window.innerHeight)) * 100;
+            document.getElementById('progressBar').style.width = scrolled + '%';
+        });
+
+        // Intersection Observer for Animations
+        const observerOptions = {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        };
+
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('visible');
+                }
+            });
+        }, observerOptions);
+
+        // Observe all material sections
+        document.querySelectorAll('.material-section').forEach(section => {
+            observer.observe(section);
+        });
+
+        // Smooth scrolling for TOC links
+        document.querySelectorAll('.toc-item a').forEach(link => {
+            link.addEventListener('click', (e) => {
+                e.preventDefault();
+                const targetId = link.getAttribute('href').substring(1);
+                const targetElement = document.getElementById(targetId);
+                if (targetElement) {
+                    targetElement.scrollIntoView({
+                        behavior: 'smooth',
+                        block: 'start'
+                    });
+                }
+            });
+        });
+
+        // Tab functionality
+        function showTab(tabName) {
+            // Hide all tab contents
+            document.querySelectorAll('.tab-content').forEach(content => {
+                content.classList.remove('active');
+            });
+            
+            // Remove active class from all buttons
+            document.querySelectorAll('.tab-button').forEach(button => {
+                button.classList.remove('active');
+            });
+            
+            // Show selected tab content
+            document.getElementById(tabName).classList.add('active');
+            
+            // Add active class to clicked button
+            event.target.classList.add('active');
+        }
+
+        // Quiz functionality
+        function selectAnswer(quizNum, optionNum, isCorrect) {
+            const quizContainer = document.getElementById(`quiz${quizNum}`);
+            const options = quizContainer.querySelectorAll('.quiz-option');
+            
+            // Remove previous selections
+            options.forEach(option => {
+                option.classList.remove('correct', 'incorrect');
+            });
+            
+            // Mark the selected option
+            if (isCorrect) {
+                options[optionNum].classList.add('correct');
+                showFeedback(true);
+            } else {
+                options[optionNum].classList.add('incorrect');
+                showFeedback(false);
+                // Show correct answer after 1 second
+                setTimeout(() => {
+                    options.forEach((option, index) => {
+                        if ((quizNum === 1 && index === 2) || (quizNum === 2 && index === 1)) {
+                            option.classList.add('correct');
+                        }
+                    });
+                }, 1000);
+            }
+        }
+
+        // Feedback function
+        function showFeedback(isCorrect) {
+            const feedback = document.createElement('div');
+            feedback.style.cssText = `
+                position: fixed;
+                top: 20px;
+                right: 20px;
+                padding: 1rem 2rem;
+                border-radius: 12px;
+                color: white;
+                font-weight: 600;
+                z-index: 10000;
+                animation: slideIn 0.3s ease-out;
+                ${isCorrect ? 'background: #10b981;' : 'background: #ef4444;'}
+            `;
+            feedback.textContent = isCorrect ? '✅ Jawaban Benar!' : '❌ Jawaban Salah';
+            
+            document.body.appendChild(feedback);
+            
+            setTimeout(() => {
+                feedback.remove();
+            }, 3000);
+        }
+
+        // Section header click to expand/collapse
+        document.querySelectorAll('.section-header').forEach(header => {
+            header.addEventListener('click', () => {
+                const section = header.parentElement;
+                section.classList.toggle('collapsed');
+            });
+        });
+
+        // Add some interactive easter eggs
+        let clickCount = 0;
+        document.querySelector('.material-header h1').addEventListener('click', () => {
+            clickCount++;
+            if (clickCount === 5) {
+                alert('🎉 Easter Egg! Anda telah menemukan fitur tersembunyi. Selamat belajar!');
+                clickCount = 0;
+            }
+        });
+
+        // Auto-highlight current section in TOC
+        window.addEventListener('scroll', () => {
+            const sections = document.querySelectorAll('.material-section');
+            const tocItems = document.querySelectorAll('.toc-item');
+            
+            let currentSectionIndex = 0;
+            sections.forEach((section, index) => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top <= 100 && rect.bottom > 100) {
+                    currentSectionIndex = index;
+                }
+            });
+            
+            tocItems.forEach((item, index) => {
+                if (index === currentSectionIndex) {
+                    item.style.background = '#dbeafe';
+                    item.style.borderLeftColor = '#3b82f6';
+                } else {
+                    item.style.background = '#f8fafc';
+                    item.style.borderLeftColor = '#6366f1';
+                }
+            });
+        });
+
+        // Initialize animations on load
+        document.addEventListener('DOMContentLoaded', () => {
+            // Add entrance animations to cards
+            const cards = document.querySelectorAll('.flag-card, .case-study');
+            cards.forEach((card, index) => {
+                card.style.animationDelay = `${index * 0.1}s`;
+                card.classList.add('fadeInUp');
+            });
+            
+            // Initialize first visible sections
+            document.querySelectorAll('.material-section').forEach(section => {
+                const rect = section.getBoundingClientRect();
+                if (rect.top < window.innerHeight) {
+                    section.classList.add('visible');
+                }
+            });
+        });
+
+        // Add CSS animation class
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(100%);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            
+            .collapsed {
+                height: auto;
+                overflow: hidden;
+            }
+            
+            .collapsed .section-header ~ * {
+                display: none;
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
