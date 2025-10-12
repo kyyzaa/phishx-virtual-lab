@@ -546,10 +546,60 @@ function previousQuestion() {
 }
 
 // Submit Quiz
-function submitQuiz() {
+async function submitQuiz() {
     calculateFinalScore();
+    
+    // Save quiz results to backend if user is logged in
+    if (API && API.isLoggedIn()) {
+        try {
+            await saveQuizToBackend();
+        } catch (error) {
+            console.error('Failed to save quiz results:', error);
+            // Show warning but don't block showing results
+            alert('⚠️ Results saved locally, but failed to sync to server. Please check your connection.');
+        }
+    } else if (API) {
+        // Show login prompt for saving results
+        const shouldLogin = confirm(CONFIG.MESSAGES.LOGIN_REQUIRED + '\n\nWould you like to login now?');
+        if (shouldLogin) {
+            window.location.href = 'login.html';
+            return;
+        }
+    }
+    
     showResults();
     updateLeaderboard();
+}
+
+// Save Quiz Results to Backend
+async function saveQuizToBackend() {
+    try {
+        const quizData = {
+            quizType: CONFIG.QUIZ_TYPES.BASIC, // or determine dynamically
+            answers: userAnswers.map((answer, index) => ({
+                questionId: `q${index + 1}`,
+                selectedChoice: String.fromCharCode(97 + answer) // Convert 0,1,2,3 to 'a','b','c','d'
+            })),
+            startedAt: new Date(startTime).toISOString()
+        };
+
+        const response = await API.request(CONFIG.ENDPOINTS.SUBMIT_QUIZ, {
+            method: 'POST',
+            body: JSON.stringify(quizData)
+        });
+
+        console.log('✅ Quiz results saved to backend:', response);
+        
+        // Show success message
+        setTimeout(() => {
+            alert(CONFIG.MESSAGES.QUIZ_SAVED);
+        }, 1000);
+
+        return response.result;
+    } catch (error) {
+        console.error('❌ Failed to save quiz to backend:', error);
+        throw error;
+    }
 }
 
 // Calculate Final Score
@@ -811,7 +861,85 @@ function shareResults(accuracy, score) {
     }
 }
 
+// Load Quiz History from Backend
+async function loadQuizHistory() {
+    if (!API || !API.isLoggedIn()) return;
+    
+    try {
+        const response = await API.request(CONFIG.ENDPOINTS.QUIZ_RESULTS + '?limit=5');
+        const results = response.results;
+        
+        if (results && results.length > 0) {
+            displayQuizHistory(results);
+        }
+    } catch (error) {
+        console.error('Failed to load quiz history:', error);
+    }
+}
+
+// Display Quiz History
+function displayQuizHistory(results) {
+    // Find or create history container
+    let historyContainer = document.getElementById('quiz-history');
+    if (!historyContainer) {
+        // Create history section if it doesn't exist
+        const quizContainer = document.getElementById('quizContent').parentElement;
+        historyContainer = document.createElement('div');
+        historyContainer.id = 'quiz-history';
+        historyContainer.className = 'quiz-history-section';
+        quizContainer.appendChild(historyContainer);
+    }
+    
+    let historyHTML = `
+        <div class="quiz-card">
+            <h3>📊 Your Recent Results</h3>
+            <div class="history-list">
+    `;
+    
+    results.forEach(result => {
+        const date = new Date(result.submitted_at).toLocaleDateString();
+        const time = new Date(result.submitted_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+        
+        historyHTML += `
+            <div class="history-item">
+                <div class="history-info">
+                    <span class="history-type">${result.quiz_type}</span>
+                    <span class="history-date">${date} at ${time}</span>
+                </div>
+                <div class="history-score">
+                    <span class="score-number">${result.score}/${result.max_score}</span>
+                    <span class="score-percentage">(${result.percentage}%)</span>
+                </div>
+            </div>
+        `;
+    });
+    
+    historyHTML += `
+            </div>
+        </div>
+    `;
+    
+    historyContainer.innerHTML = historyHTML;
+}
+
 // Initialize when page loads
 document.addEventListener('DOMContentLoaded', function() {
+    // Check if auth is available and load components
+    if (typeof API !== 'undefined') {
+        loadQuizHistory();
+        
+        // Show auth status
+        const authStatus = document.createElement('div');
+        authStatus.className = 'auth-status';
+        authStatus.innerHTML = API.isLoggedIn() 
+            ? `<span class="logged-in">✅ Logged in - Results will be saved</span>`
+            : `<span class="logged-out">⚠️ <a href="login.html">Login</a> to save your results</span>`;
+        
+        const quizContainer = document.getElementById('quizContent');
+        if (quizContainer) {
+            quizContainer.parentElement.insertBefore(authStatus, quizContainer);
+        }
+    }
+    
     initializeQuiz();
 });

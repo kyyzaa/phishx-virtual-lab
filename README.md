@@ -44,6 +44,17 @@ Platform ini menggabungkan teori keamanan siber dengan praktik langsung melalui 
 - CSS3 - Styling responsif dengan animasi dan transisi
 - JavaScript (Vanilla) - Logika interaktif dan manipulasi DOM
 
+**Backend:**
+- Node.js + Express.js - RESTful API server
+- PostgreSQL (Neon) - Cloud database untuk user data
+- JWT - Authentication dan authorization
+- bcrypt - Password hashing untuk keamanan
+
+**Deployment:**
+- Frontend: GitHub Pages / Netlify (static hosting)
+- Backend: Railway / Render (serverless deployment)
+- Database: Neon PostgreSQL (managed database)
+
 ## <a name="features">🔋 Features</a>
 
  **Landing Page dengan Dashboard Statistik**
@@ -67,7 +78,8 @@ Platform ini menggabungkan teori keamanan siber dengan praktik langsung melalui 
 - Multiple choice questions dengan berbagai skenario
 - Progress tracking dan scoring system
 - Instant feedback dengan penjelasan jawaban
-- Adaptive difficulty berdasarkan performance
+- **🆕 Backend Integration**: Hasil quiz disimpan ke database
+- **🆕 User Authentication**: Login/register untuk tracking progress
 
  **Gamification Elements**
 - Point system dan achievement badges
@@ -88,27 +100,88 @@ Ikuti langkah-langkah berikut untuk menjalankan PhishX di mesin lokal Anda:
 **Prerequisites**
 
 Pastikan Anda telah menginstall:
-- Web browser modern (Chrome, Firefox, Safari, Edge)
-- [Git](https://git-scm.com/) (optional, untuk cloning)
-- Text editor atau IDE (VS Code, Sublime Text, dll)
+- [Node.js](https://nodejs.org/) (version 16 atau lebih baru)
+- [Git](https://git-scm.com/) untuk cloning repository
+- Database: Akun [Neon PostgreSQL](https://neon.tech/) (gratis)
+- Text editor atau IDE (VS Code recommended)
 
 **Cloning the Repository**
 
 ```bash
 git clone https://github.com/kyyzaa/phishx-virtual-lab.git
+cd phishx-virtual-lab
 ```
 
-**Running the Project**
+**Setup Backend**
 
-**Option 1: Live Demo (Recommended)**
-Akses langsung aplikasi yang sudah di-deploy di: **[https://phishx.vercel.app](https://phishx.vercel.app)**
-
-**Option 2: Local Development**
-Untuk development lokal menggunakan Live Server:
+1. **Install dependencies**:
 ```bash
-# Jika menggunakan VS Code dengan Live Server extension
-# Klik kanan pada index.html > "Open with Live Server"
+# Install root dependencies
+npm install
+
+# Install backend dependencies  
+cd backend
+npm install
 ```
+
+2. **Setup Database (Neon PostgreSQL)**:
+```bash
+# Buat akun di https://neon.tech/ (gratis)
+# Buat database baru dan copy connection string
+# Contoh: postgresql://username:password@ep-xxx.neon.tech/dbname?sslmode=require
+```
+
+3. **Configure Environment**:
+```bash
+# Di folder backend/, copy .env.example ke .env
+cp .env.example .env
+
+# Edit .env dan isi dengan data Anda:
+# DATABASE_URL=postgresql://username:password@ep-xxx.neon.tech/dbname?sslmode=require
+# JWT_SECRET=your-super-secret-jwt-key-minimum-32-characters
+# PORT=3001
+# FRONTEND_URL=http://localhost:3000
+```
+
+4. **Run Database Migration**:
+```bash
+# Masih di folder backend/
+npm run migrate
+```
+
+5. **Start Backend Server**:
+```bash
+npm run dev
+# Server akan berjalan di http://localhost:3001
+```
+
+**Setup Frontend**
+
+1. **Di terminal baru**, start frontend:
+```bash
+# Dari root directory
+npm run dev:frontend
+# Frontend akan berjalan di http://localhost:3000
+```
+
+**Option: Quick Development**
+
+Jalankan frontend dan backend secara bersamaan:
+```bash
+# Dari root directory
+npm run dev
+```
+
+**Production Deployment**
+
+**Frontend (GitHub Pages/Netlify):**
+1. Deploy folder `frontend/` ke GitHub Pages atau Netlify
+2. Update `CONFIG.API_BASE_URL` di `frontend/assets/js/config.js` dengan URL backend production
+
+**Backend (Railway/Render):**
+1. Connect repository ke Railway atau Render
+2. Set environment variables (DATABASE_URL, JWT_SECRET, dll.)
+3. Deploy akan otomatis dari folder `backend/`
 
 ## <a name="usage">📖 Usage</a>
 

@@ -1,0 +1,24 @@
+{
+  "name": "phishx-virtual-lab",
+  "version": "1.0.0",
+  "description": "Virtual Lab for Phishing Education with Neon Backend",
+  "scripts": {
+    "dev": "concurrently \"npm run dev:backend\" \"npm run dev:frontend\"",
+    "dev:backend": "cd backend && npm run dev",
+    "dev:frontend": "cd frontend && npx http-server -p 3000 -c-1",
+    "install:all": "npm install && cd backend && npm install",
+    "build": "echo 'Frontend is static files, Backend builds automatically'",
+    "start": "cd backend && npm start"
+  },
+  "devDependencies": {
+    "concurrently": "^8.2.0",
+    "http-server": "^14.1.1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/kyyzaa/phishx-virtual-lab"
+  },
+  "keywords": ["phishing", "education", "virtual-lab", "cybersecurity"],
+  "author": "kyyzaa",
+  "license": "MIT"
+}
