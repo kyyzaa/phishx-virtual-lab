@@ -551,20 +551,26 @@ async function submitQuiz() {
     
     // Save quiz results to backend if user is logged in
     if (API && API.isLoggedIn()) {
+        console.log('🔑 User is logged in, attempting to save to database...');
+        console.log('🔑 Token exists:', !!API.getToken());
+        console.log('🔑 User data:', API.getUser());
+        
         try {
             await saveQuizToBackend();
+            console.log('✅ Quiz results saved successfully to database');
         } catch (error) {
-            console.error('Failed to save quiz results:', error);
+            console.error('❌ Failed to save quiz results:', error);
+            console.error('❌ Error details:', error.message);
             // Show warning but don't block showing results
-            alert('⚠️ Results saved locally, but failed to sync to server. Please check your connection.');
+            alert(`⚠️ Results saved locally, but failed to sync to server.\n\nError: ${error.message}\n\nPlease check your connection and try refreshing the page.`);
         }
     } else if (API) {
-        // Show login prompt for saving results
-        const shouldLogin = confirm(CONFIG.MESSAGES.LOGIN_REQUIRED + '\n\nWould you like to login now?');
-        if (shouldLogin) {
-            window.location.href = 'login.html';
-            return;
-        }
+        console.log('ℹ️ User not logged in - results saved locally only');
+        console.log('🔑 Token exists:', !!API.getToken());
+        console.log('🔑 User data:', API.getUser());
+        // Don't show annoying popup, just save locally
+    } else {
+        console.log('⚠️ API not available');
     }
     
     showResults();
@@ -590,10 +596,13 @@ async function saveQuizToBackend() {
 
         console.log('✅ Quiz results saved to backend:', response);
         
-        // Show success message
-        setTimeout(() => {
-            alert(CONFIG.MESSAGES.QUIZ_SAVED);
-        }, 1000);
+        // Show success message with better timing
+        if (response.result) {
+            setTimeout(() => {
+                // Show subtle success notification instead of alert
+                showSuccessNotification(CONFIG.MESSAGES.QUIZ_SAVED);
+            }, 500);
+        }
 
         return response.result;
     } catch (error) {
@@ -891,28 +900,68 @@ function displayQuizHistory(results) {
     }
     
     let historyHTML = `
-        <div class="quiz-card">
-            <h3>📊 Your Recent Results</h3>
+        <div class="quiz-card recent-results-card">
+            <div class="recent-results-header">
+                <div class="results-icon">📊</div>
+                <h3>Your Recent Results</h3>
+            </div>
             <div class="history-list">
     `;
     
-    results.forEach(result => {
-        const date = new Date(result.submitted_at).toLocaleDateString();
-        const time = new Date(result.submitted_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
-        
+    if (results.length === 0) {
         historyHTML += `
-            <div class="history-item">
-                <div class="history-info">
-                    <span class="history-type">${result.quiz_type}</span>
-                    <span class="history-date">${date} at ${time}</span>
-                </div>
-                <div class="history-score">
-                    <span class="score-number">${result.score}/${result.max_score}</span>
-                    <span class="score-percentage">(${result.percentage}%)</span>
-                </div>
+            <div class="empty-results">
+                <div class="empty-icon">🎯</div>
+                <p>No quiz results yet</p>
+                <small>Complete a quiz to see your results here</small>
             </div>
         `;
-    });
+    } else {
+        results.forEach((result, index) => {
+            const date = new Date(result.submitted_at).toLocaleDateString();
+            const time = new Date(result.submitted_at).toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            const percentage = Math.round((result.score / result.max_score) * 100);
+            
+            // Determine performance level and color
+            let performanceLevel = '';
+            let performanceClass = '';
+            if (percentage >= 80) {
+                performanceLevel = 'Excellent';
+                performanceClass = 'excellent';
+            } else if (percentage >= 60) {
+                performanceLevel = 'Good';
+                performanceClass = 'good';
+            } else if (percentage >= 40) {
+                performanceLevel = 'Fair';
+                performanceClass = 'fair';
+            } else {
+                performanceLevel = 'Needs Improvement';
+                performanceClass = 'poor';
+            }
+            
+            historyHTML += `
+                <div class="history-item ${index === 0 ? 'latest' : ''}">
+                    <div class="history-badge ${performanceClass}">
+                        ${index === 0 ? '🆕' : '📋'}
+                    </div>
+                    <div class="history-info">
+                        <div class="history-title">
+                            <span class="history-type">${result.quiz_type}</span>
+                            ${index === 0 ? '<span class="latest-badge">Latest</span>' : ''}
+                        </div>
+                        <span class="history-date">📅 ${date} at ${time}</span>
+                        <span class="performance-level ${performanceClass}">${performanceLevel}</span>
+                    </div>
+                    <div class="history-score ${performanceClass}">
+                        <div class="score-circle ${performanceClass}">
+                            <span class="score-percentage">${percentage}%</span>
+                        </div>
+                        <span class="score-detail">${result.score}/${result.max_score}</span>
+                    </div>
+                </div>
+            `;
+        });
+    }
     
     historyHTML += `
             </div>
@@ -928,18 +977,59 @@ document.addEventListener('DOMContentLoaded', function() {
     if (typeof API !== 'undefined') {
         loadQuizHistory();
         
-        // Show auth status
-        const authStatus = document.createElement('div');
-        authStatus.className = 'auth-status';
-        authStatus.innerHTML = API.isLoggedIn() 
-            ? `<span class="logged-in">✅ Logged in - Results will be saved</span>`
-            : `<span class="logged-out">⚠️ <a href="login.html">Login</a> to save your results</span>`;
-        
-        const quizContainer = document.getElementById('quizContent');
-        if (quizContainer) {
-            quizContainer.parentElement.insertBefore(authStatus, quizContainer);
+        // Show subtle auth hint only if not logged in
+        if (!API.isLoggedIn()) {
+            const authHint = document.createElement('div');
+            authHint.className = 'auth-hint';
+            authHint.innerHTML = `
+                <div class="hint-content">
+                    <span class="hint-icon">💡</span>
+                    <span class="hint-text">Login to save your quiz results permanently</span>
+                    <a href="login.html" class="hint-link">Login</a>
+                </div>
+            `;
+            
+            const quizContainer = document.getElementById('quizContent');
+            if (quizContainer) {
+                quizContainer.parentElement.insertBefore(authHint, quizContainer);
+            }
         }
     }
     
     initializeQuiz();
 });
+
+// Show success notification
+function showSuccessNotification(message) {
+    // Remove existing notification
+    const existingNotification = document.querySelector('.success-notification');
+    if (existingNotification) {
+        existingNotification.remove();
+    }
+    
+    // Create notification
+    const notification = document.createElement('div');
+    notification.className = 'success-notification';
+    notification.innerHTML = `
+        <div class="notification-content">
+            <span class="notification-icon">✅</span>
+            <span class="notification-text">${message}</span>
+        </div>
+    `;
+    
+    // Add to page
+    document.body.appendChild(notification);
+    
+    // Animate in
+    setTimeout(() => {
+        notification.classList.add('show');
+    }, 100);
+    
+    // Auto remove after 3 seconds
+    setTimeout(() => {
+        notification.classList.add('hide');
+        setTimeout(() => {
+            notification.remove();
+        }, 300);
+    }, 3000);
+}
