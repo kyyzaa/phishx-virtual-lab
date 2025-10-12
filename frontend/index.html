@@ -23,6 +23,10 @@
                 <button class="nav-btn" onclick="window.location.href='emailsimulator.html'">Email Simulator</button>
                 <button class="nav-btn" onclick="window.location.href='materi.html'">Materi</button>
                 <button class="nav-btn" onclick="window.location.href='quiz.html'">Quiz</button>
+                <!-- Auth buttons -->
+                <button id="login-btn" class="nav-btn" onclick="window.location.href='login.html'" style="display: none;">Login</button>
+                <span id="user-display" class="nav-user" style="display: none;"></span>
+                <button id="logout-btn" class="nav-btn" style="display: none;">Logout</button>
             </div>
         </nav>
     </header>
@@ -188,6 +192,9 @@
         <p>&copy; 2025 Virtual Lab TPB ITB - Literasi Digital</p>
     </footer>
 
+    <!-- Load configuration and authentication -->
+    <script src="assets/js/config.js"></script>
+    <script src="auth.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>
