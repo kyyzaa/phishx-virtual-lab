@@ -902,7 +902,6 @@ function displayQuizHistory(results) {
     let historyHTML = `
         <div class="quiz-card recent-results-card">
             <div class="recent-results-header">
-                <div class="results-icon">📊</div>
                 <h3>Your Recent Results</h3>
             </div>
             <div class="history-list">

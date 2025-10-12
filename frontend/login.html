@@ -330,9 +330,9 @@
                 if (result.success) {
                     showSuccess('loginFormSuccess', result.message);
                     setTimeout(() => {
-                        // Redirect to quiz page or previous page
+                        // Redirect to homepage or previous page
                         const urlParams = new URLSearchParams(window.location.search);
-                        const redirect = urlParams.get('redirect') || 'quiz.html';
+                        const redirect = urlParams.get('redirect') || 'index.html';
                         window.location.href = redirect;
                     }, 1500);
                 } else {
@@ -389,8 +389,8 @@
                 if (result.success) {
                     showSuccess('registerFormSuccess', result.message);
                     setTimeout(() => {
-                        // Redirect to quiz page
-                        window.location.href = 'quiz.html';
+                        // Redirect to homepage
+                        window.location.href = 'index.html';
                     }, 1500);
                 } else {
                     showError('registerFormError', result.error);
@@ -406,8 +406,8 @@
         // Check if already logged in
         document.addEventListener('DOMContentLoaded', () => {
             if (API && API.isLoggedIn()) {
-                // Already logged in, redirect
-                window.location.href = 'quiz.html';
+                // Already logged in, redirect to homepage
+                window.location.href = 'index.html';
             }
         });
     </script>

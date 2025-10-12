@@ -46,14 +46,17 @@ Platform ini menggabungkan teori keamanan siber dengan praktik langsung melalui 
 
 **Backend:**
 - Node.js + Express.js - RESTful API server
-- PostgreSQL (Neon) - Cloud database untuk user data
-- JWT - Authentication dan authorization
-- bcrypt - Password hashing untuk keamanan
+- Neon PostgreSQL - Cloud database untuk user data dan quiz results
+- JWT (jsonwebtoken) - Token-based authentication
+- bcryptjs - Password hashing untuk keamanan
+- Helmet - HTTP security headers
+- CORS - Cross-origin resource sharing
+- express-validator - Input validation
 
 **Deployment:**
-- Frontend: GitHub Pages / Netlify (static hosting)
-- Backend: Railway / Render (serverless deployment)
-- Database: Neon PostgreSQL (managed database)
+- Frontend: Vercel (static hosting)
+- Backend: Vercel (serverless functions) 
+- Database: Neon PostgreSQL (managed cloud database)
 
 ## <a name="features">🔋 Features</a>
 
@@ -139,28 +142,29 @@ cp .env.example .env
 # Edit .env dan isi dengan data Anda:
 # DATABASE_URL=postgresql://username:password@ep-xxx.neon.tech/dbname?sslmode=require
 # JWT_SECRET=your-super-secret-jwt-key-minimum-32-characters
-# PORT=3001
+# PORT=3002
 # FRONTEND_URL=http://localhost:3000
 ```
 
 4. **Run Database Migration**:
 ```bash
 # Masih di folder backend/
-npm run migrate
+node migrations/migrate.js
 ```
 
 5. **Start Backend Server**:
 ```bash
-npm run dev
-# Server akan berjalan di http://localhost:3001
+npm start
+# Server akan berjalan di http://localhost:3002
 ```
 
 **Setup Frontend**
 
 1. **Di terminal baru**, start frontend:
 ```bash
-# Dari root directory
-npm run dev:frontend
+# Dari root directory, jalankan Python HTTP server
+cd frontend
+python -m http.server 3000
 # Frontend akan berjalan di http://localhost:3000
 ```
 
@@ -174,12 +178,12 @@ npm run dev
 
 **Production Deployment**
 
-**Frontend (GitHub Pages/Netlify):**
-1. Deploy folder `frontend/` ke GitHub Pages atau Netlify
-2. Update `CONFIG.API_BASE_URL` di `frontend/assets/js/config.js` dengan URL backend production
+**Frontend (Vercel):**
+1. Deploy folder `frontend/` ke Vercel
+2. Update `API_BASE_URL` di `frontend/assets/js/config.js` dengan URL backend production
 
-**Backend (Railway/Render):**
-1. Connect repository ke Railway atau Render
+**Backend (Vercel):**
+1. Connect repository ke Vercel
 2. Set environment variables (DATABASE_URL, JWT_SECRET, dll.)
 3. Deploy akan otomatis dari folder `backend/`
 

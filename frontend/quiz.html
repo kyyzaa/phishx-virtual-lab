@@ -635,23 +635,12 @@
             background: linear-gradient(135deg, #f8f9fa 0%, #ffffff 100%);
             border: 1px solid rgba(102, 126, 234, 0.1);
             box-shadow: 0 8px 32px rgba(102, 126, 234, 0.1);
+            margin-top: 3rem; /* Add more space from buttons above */
         }
 
         .recent-results-header {
-            display: flex;
-            align-items: center;
-            margin-bottom: 1.5rem;
-            padding-bottom: 1rem;
-            border-bottom: 2px solid rgba(102, 126, 234, 0.1);
-        }
-
-        .results-icon {
-            font-size: 2rem;
-            margin-right: 1rem;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+            margin-bottom: 2rem;
+            text-align: left;
         }
 
         .recent-results-header h3 {
@@ -983,7 +972,7 @@
     <div class="quiz-container">
         <!-- Quiz Header -->
         <div class="quiz-header">
-            <h1 class="quiz-title">🎯 Interactive Quiz</h1>
+            <h1 class="quiz-title"><img src="assets/img/target.png" alt="Target" style="width: 48px; height: 48px; margin-right: 12px; vertical-align: middle;"> Interactive Quiz</h1>
             <p class="quiz-subtitle">Test your phishing detection skills with interactive challenges</p>
             
             <!-- Progress Bar -->

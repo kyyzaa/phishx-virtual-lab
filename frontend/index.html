@@ -34,24 +34,56 @@
     <main class="main-content">
         <!-- Home Section -->
         <section id="home" class="section active">
-            <div class="hero">
-                <h2>Selamat Datang di PhishX Lab</h2>
-                <p>Virtual Lab interaktif untuk belajar mengenali dan menghindari serangan phishing online</p>
-                <div class="stats-grid">
-                    <div class="stat-card">
-                        <div class="stat-number" id="totalAttempts">0</div>
-                        <div class="stat-label">Total Percobaan</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="correctDetections">0</div>
-                        <div class="stat-label">Deteksi Benar</div>
-                    </div>
-                    <div class="stat-card">
-                        <div class="stat-number" id="accuracy">0%</div>
-                        <div class="stat-label">Akurasi</div>
+            <div class="home-container">
+                <!-- Welcome Box -->
+                <div class="white-box welcome-box">
+                    <div class="box-content">
+                        <h2>Selamat Datang di PhishX Lab</h2>
+                        <p>Virtual Lab interaktif untuk belajar mengenali dan menghindari serangan phishing online</p>
+                        <button class="cta-button" onclick="window.location.href='materi.html'">Mulai Belajar</button>
                     </div>
                 </div>
-                <button class="cta-button" onclick="window.location.href='materi.html'">Mulai Belajar</button>
+
+                <!-- Features Box -->
+                <div class="white-box features-box">
+                    <div class="features-header">
+                        <h3>Fitur Unggulan</h3>
+                        <p>Lengkapi pembelajaran cybersecurity Anda dengan fitur-fitur interaktif</p>
+                    </div>
+                    <div class="features-grid">
+                        <div class="feature-item" onclick="window.location.href='quiz.html'">
+                            <h4>Interactive Quiz</h4>
+                            <p>Test kemampuan deteksi phishing dengan berbagai skenario realistis</p>
+                        </div>
+                        <div class="feature-item" onclick="window.location.href='emailsimulator.html'">
+                            <h4>Email Simulator</h4>
+                            <p>Simulasi email phishing vs legitimate untuk latihan</p>
+                        </div>
+                        <div class="feature-item" onclick="window.location.href='materi.html'">
+                            <h4>Materi Lengkap</h4>
+                            <p>Panduan komprehensif mengenali serangan phishing</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Stats Box -->
+                <div class="white-box stats-box">
+                    <div class="stats-header">
+                        <h3>Fakta Cybersecurity</h3>
+                    </div>
+                    <div class="stats-grid">
+                        <div class="stat-item">
+                            <div class="stat-icon">⚠️</div>
+                            <div class="stat-number">83%</div>
+                            <div class="stat-text">Organisasi mengalami serangan phishing</div>
+                        </div>
+                        <div class="stat-item">
+                            <div class="stat-icon">💰</div>
+                            <div class="stat-number">$4.65M</div>
+                            <div class="stat-text">Rata-rata kerugian dari data breach</div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </section>
 
