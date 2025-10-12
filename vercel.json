@@ -1,8 +1,7 @@
 {
   "buildCommand": "echo 'Static files ready'",
   "outputDirectory": "frontend",
-  "installCommand": "npm install --prefix backend",
-  "functions": {},
+  "installCommand": "",
   "routes": [
     {
       "src": "/(.*)",
