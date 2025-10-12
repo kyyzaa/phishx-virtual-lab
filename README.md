@@ -1,7 +1,7 @@
 <div align="center">
   <br />
     <a href="#" target="_blank">
-      <img src="assets/img/PhishX.png" alt="PhishX Logo" width="200">
+      <img src="frontend/assets/img/PhishX.png" alt="PhishX Logo" width="200">
     </a>
   <br />
 
