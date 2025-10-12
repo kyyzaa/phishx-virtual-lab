@@ -3,7 +3,7 @@ const CONFIG = {
     // API Base URL - akan otomatis detect environment
     API_BASE_URL: window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1'
         ? 'http://localhost:3002/api'  // Development (updated port)
-        : 'https://phishx-backend.railway.app/api',  // Production - akan diupdate setelah deploy backend
+        : 'https://phishx-virtual-lab-production.up.railway.app/api',  // Production Railway URL
 
     // Local storage keys
     STORAGE_KEYS: {
